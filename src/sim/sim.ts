@@ -215,8 +215,8 @@ export function stateApplyModifier(state: ElixirState) {
     if (action.targetType === 6) {
       pickedTargets.push(state.context.pickedTarget)
     } else {
-      const targets = effectTargets(state, action).filter((target) =>
-        func.valid(curState, target, action)
+      const targets = effectTargets(state, action).filter(
+        (target) => target >= 0 && func.valid(curState, target, action)
       )
       for (let i = 0; i < action.targetCount && targets.length; ++i) {
         const index = Math.floor(Math.random() * targets.length)
@@ -254,8 +254,8 @@ export function statePreviewModifier(state: ElixirState) {
       if (state.context.pickedTarget < 0) return undefined
       pickedTargets.push(state.context.pickedTarget)
     } else {
-      const targets = effectTargets(state, action).filter((target) =>
-        func.valid(curState, target, action)
+      const targets = effectTargets(state, action).filter(
+        (target) => target >= 0 && func.valid(curState, target, action)
       )
       if (action.targetCount === targets.length) {
         pickedTargets.push(...targets)
