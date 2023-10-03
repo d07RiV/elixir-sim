@@ -46,7 +46,9 @@ function ElixirCreator({
                   (id) => Data.classes[id].baseClass === base && id !== base
                 )
                 .map((id) => (
-                  <option key={id}>{Data.classes[id].name}</option>
+                  <option key={id} value={id}>
+                    {Data.classes[id].name}
+                  </option>
                 ))}
             </optgroup>
           ))}
