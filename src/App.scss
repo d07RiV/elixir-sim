@@ -1,0 +1,558 @@
+.ElixirCreator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0;
+}
+
+.elixir-item {
+  position: relative;
+  width: 300px;
+  padding: 8px;
+  margin: 8px;
+  overflow: hidden;
+  background-color: #111;
+  z-index: 0;
+  cursor: pointer;
+  &::before {
+    content: '';
+    z-index: -1;
+    position: absolute;
+    width: 40%;
+    height: 0;
+    left: 0;
+    bottom: 0;
+  }
+  &.epic {
+    .icon {
+      background-image: url(~assets/Use_11_147.png);
+    }
+    color: #bf00fe;
+    &::before {
+      box-shadow: 0 0 35px 35px rgba(#bf00fe, 0.5);
+    }
+    border: 1px solid rgba(#bf00fe, 0.5);
+  }
+  &.leg {
+    .icon {
+      background-image: url(~assets/Use_11_146.png);
+    }
+    color: #f39303;
+    &::before {
+      box-shadow: 0 0 35px 35px rgba(#f39303, 0.5);
+    }
+    border: 1px solid rgba(#f39303, 0.5);
+  }
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .icon {
+    width: 64px;
+    height: 64px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+  }
+}
+
+.elixirWrapper {
+  position: absolute;
+  inset: 0;
+  height: 900px;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ElixirEditor {
+  position: relative;
+  width: 1613px;
+  height: 900px;
+  background: url(~assets/background.webp);
+  font-size: 14px;
+
+  .sageButtons {
+    position: absolute;
+    left: 297px;
+    top: 549px;
+    width: 888px;
+    height: 82px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .sageButton {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 290px;
+    height: 82px;
+    padding: 12px;
+    box-sizing: border-box;
+    cursor: pointer;
+    &.disabled {
+      cursor: default;
+      .content,
+      .content * {
+        color: #888 !important;
+      }
+    }
+    &.order {
+      box-shadow: inset 0 0 4px 2px #7497c3;
+    }
+    &.chaos {
+      box-shadow: inset 0 0 4px 2px #9665c2;
+    }
+    &.active {
+      box-shadow: inset 0 0 4px 2px #ffd200;
+    }
+
+    .effectTooltip {
+      display: none;
+      position: absolute;
+      left: 100%;
+      margin-left: 10px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    &:not(.disabled):hover .effectTooltip {
+      display: block;
+    }
+
+    .stars {
+      pointer-events: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 88px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      &.chaos .star {
+        background-position-y: -44px;
+      }
+      &.order .star {
+        margin: 0 7px;
+      }
+    }
+    .star {
+      width: 44px;
+      height: 44px;
+      background-image: url(~assets/stars.webp);
+      background-position-x: -44px;
+      &.active {
+        background-position-x: 0;
+      }
+    }
+  }
+  .continueButton {
+    position: absolute;
+    left: 643px;
+    top: 833px;
+    width: 194px;
+    height: 46px;
+    line-height: 46px;
+    text-align: center;
+    text-shadow: 0 1px 2px #000;
+    cursor: pointer;
+    &.disabled {
+      color: #888;
+      cursor: default;
+    }
+
+    background-image: url(~assets/buttons.webp);
+    background-position: 0 -46px;
+    &.disabled {
+      background-position: 0 0;
+    }
+    &.active {
+      background-position: 0 -92px;
+    }
+  }
+  .exitButton {
+    z-index: 20;
+    position: absolute;
+    width: 151px;
+    height: 46px;
+    right: 17px;
+    top: 833px;
+    line-height: 46px;
+    text-align: center;
+    text-shadow: 0 1px 2px #000;
+    cursor: pointer;
+    background-image: url(~assets/buttons.webp);
+    background-position: 0 -138px;
+  }
+
+  .panels {
+    position: absolute;
+    left: 1221px;
+    top: 11px;
+  }
+  .effectPanel {
+    width: 377px;
+    height: 99px;
+    margin-bottom: 6px;
+    &:nth-child(3) {
+      margin-bottom: 5px;
+    }
+    position: relative;
+    text-shadow: 0 0 2px #000;
+
+    cursor: default;
+    &.picking {
+      cursor: pointer;
+    }
+
+    .effectTooltip {
+      display: none;
+      position: absolute;
+      right: 100%;
+      margin-right: 10px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    &:hover .effectTooltip {
+      display: block;
+    }
+
+    background-image: url(~assets/panel.webp);
+    &.empty {
+      background: none;
+      cursor: default;
+      .name {
+        left: 40px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        text-align: center;
+        line-height: 99px;
+        color: #8b9094;
+        font-size: 16px;
+      }
+    }
+
+    &.highlight::after,
+    &.active::after {
+      content: '';
+      position: absolute;
+      inset: 0 0 3px;
+      pointer-events: none;
+      z-index: 2;
+      mask-image: linear-gradient(
+        to right,
+        transparent 5%,
+        #000 20%,
+        #000 80%,
+        transparent 95%
+      );
+    }
+    &.highlight::after {
+      box-shadow: inset 0 0 2px 2px #b7d4e7;
+    }
+    &.active::after {
+      box-shadow: inset 0 0 2px 2px #c2a95f;
+    }
+    &.highlight::before,
+    &.active::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 3px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    &.highlight::before {
+      background: linear-gradient(
+        to right,
+        rgba(#b7d4e7, 0) 0%,
+        rgba(#b7d4e7, 20%) 10%,
+        rgba(#b7d4e7, 0) 50%,
+        rgba(#b7d4e7, 20%) 90%,
+        rgba(#b7d4e7, 0) 100%
+      );
+    }
+    &.active::before {
+      background: linear-gradient(
+        to right,
+        rgba(#ae9e6c, 0) 0%,
+        rgba(#ae9e6c, 20%) 10%,
+        rgba(#ae9e6c, 0) 50%,
+        rgba(#ae9e6c, 20%) 90%,
+        rgba(#ae9e6c, 0) 100%
+      );
+    }
+
+    .name {
+      position: absolute;
+      left: 88px;
+      top: 14px;
+      color: #ffd200;
+    }
+    .chance {
+      position: absolute;
+      left: 22px;
+      top: 41px;
+      width: 50px;
+      text-align: center;
+      .pct {
+        font-size: 11px;
+      }
+    }
+    .critical {
+      position: absolute;
+      right: 20px;
+      top: 70px;
+      font-size: 12px;
+    }
+    .type {
+      position: absolute;
+      right: 13px;
+      top: 15px;
+      font-size: 12px;
+    }
+
+    .increase {
+      color: #b7fb00;
+    }
+    .decrease {
+      color: #c24b46;
+    }
+
+    .points {
+      position: absolute;
+      left: 86px;
+      top: 32px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+    .point {
+      width: 28px;
+      height: 28px;
+      position: relative;
+      z-index: 0;
+      line-height: 28px;
+      text-align: center;
+      color: #888;
+      &::after {
+        content: '';
+        z-index: -1;
+        position: absolute;
+        inset: -2px -1px 0 -3px;
+        background-image: url(~assets/ticks.webp);
+      }
+      &.major::after {
+        background-position: -34px 0;
+      }
+      &.active {
+        color: #fff;
+      }
+      &.active::before {
+        content: '';
+        z-index: -2;
+        position: absolute;
+        inset: 3px 5px 5px 3px;
+        background-image: url(~assets/ticks.webp);
+        background-position-y: -30px;
+        animation-duration: 1s;
+        animation-name: levelup;
+      }
+    }
+    .level-2 .point.active::before {
+      background-position-x: -20px;
+    }
+    .level-3 .point.active::before {
+      background-position-x: -40px;
+    }
+    .level-4 .point.active::before {
+      background-position-x: -60px;
+    }
+    .level-5 .point.active::before {
+      background-position-x: -80px;
+    }
+    @keyframes levelup {
+      from {
+        width: 0px;
+      }
+      to {
+        width: 20px;
+      }
+    }
+  }
+
+  .guide-top {
+    position: absolute;
+    top: 657px;
+    height: 40px;
+    left: 0;
+    right: 128px;
+    text-align: center;
+  }
+  .guide-middle {
+    position: absolute;
+    top: 694px;
+    height: 87px;
+    left: 455px;
+    width: 570px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(to right, transparent, #000, transparent);
+  }
+
+  .remainingSteps {
+    position: absolute;
+    top: 787px;
+    left: 560px;
+    width: 360px;
+    height: 37px;
+    line-height: 37px;
+    text-align: center;
+    color: #ffd200;
+    font-size: 16px;
+    text-shadow: 0 0 3px #000;
+    background-image: linear-gradient(to right, transparent, #0008, transparent),
+      radial-gradient(
+        ellipse 180px 20px at 50% 100%,
+        #928e44 0%,
+        #5a3712 50%,
+        transparent 100%
+      );
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      background-image: linear-gradient(
+        to right,
+        transparent,
+        #94843d,
+        transparent
+      );
+    }
+  }
+
+  .priceMaterials {
+    position: absolute;
+    left: 426px;
+    top: 700px;
+    width: 286px;
+    text-shadow: 0 1px 2px #000;
+    .header {
+      color: #8dadbc;
+    }
+    .item {
+      height: 46px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 6px 0;
+      padding-left: 12px;
+      .icon {
+        width: 46px;
+        height: 46px;
+        background: linear-gradient(to bottom right, #101a24, #123e5f);
+        box-shadow: inset 0 0 1px 2px #000;
+        position: relative;
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 4px;
+          background-image: url(~assets/Use_11_150.png);
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+        }
+      }
+      .name {
+        color: #03a7fd;
+        margin-left: 4px;
+        flex-grow: 1;
+      }
+      .amount {
+        color: #b7fb00;
+      }
+    }
+  }
+  .priceGold {
+    position: absolute;
+    left: 755px;
+    top: 700px;
+    width: 286px;
+    text-shadow: 0 1px 2px #000;
+    .header {
+      color: #8dadbc;
+    }
+    .item {
+      height: 46px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 6px 0;
+      padding-left: 12px;
+      .icon {
+        width: 20px;
+        height: 19px;
+        background: url(~assets/gold.png);
+        margin-top: -2px;
+        margin-left: 3px;
+      }
+      .name {
+        color: #abb0b5;
+        flex-grow: 1;
+      }
+      .amount {
+        color: #fff;
+      }
+    }
+  }
+
+  .rerollButton {
+    position: absolute;
+    z-index: 0;
+    &::before {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      width: 320px;
+      height: 100px;
+      left: -16px;
+      top: -16px;
+      background: url(~assets/reroll.webp);
+      z-index: -1;
+    }
+    width: 287px;
+    height: 69px;
+    left: 1235px;
+    top: 556px;
+    line-height: 69px;
+    font-size: 16px;
+    color: #f0eeb5;
+    text-align: center;
+    cursor: pointer;
+    &.disabled {
+      cursor: default;
+      color: #888;
+    }
+  }
+
+  .tooltipWrapper {
+    z-index: 10;
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    .elixirTooltip {
+      margin: 60px auto;
+    }
+  }
+}

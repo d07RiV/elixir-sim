@@ -1,0 +1,138 @@
+.effectTooltip {
+  font-size: 13px;
+  background: rgba(#0a0a0a, 0.95);
+  padding: 10px;
+  width: 260px;
+  text-align: left;
+  line-height: 1.4;
+  .title {
+    color: #ffd200;
+    margin-top: 4px;
+  }
+  .levels {
+    margin-top: 12px;
+  }
+  .effect {
+    color: #888;
+    &.active {
+      color: #fff;
+    }
+  }
+}
+
+.elixirTooltip {
+  font-size: 14px;
+  width: 310px;
+  vertical-align: top;
+  line-height: 1.4em;
+  text-shadow: 1px 2px 1px #000;
+  box-shadow: 0 0 1px 1px #000;
+  .itemTitle {
+    background: rgba(#141414, 0.95);
+    font-size: 1.2em;
+    padding: 8px 8px;
+    text-align: center;
+  }
+  .itemBody {
+    background: rgba(#0a0a0a, 0.95);
+    padding: 8px;
+  }
+  .itemHeader {
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+    display: flex;
+    flex-direction: row;
+    .itemIcon {
+      font-size: 64px;
+      align-self: flex-end;
+    }
+  }
+  .itemHeader::before {
+    content: '';
+    z-index: -1;
+    position: absolute;
+    width: 40%;
+    height: 0;
+    left: 0;
+    bottom: 0;
+  }
+  @mixin item-grade($grade, $color) {
+    &.item-#{$grade} {
+      .itemTitle,
+      .itemGrade {
+        color: $color;
+      }
+      .itemHeader::before {
+        box-shadow: 0 0 35px 35px rgba($color, 0.5);
+      }
+    }
+  }
+  @include item-grade('epic', #bf00fe);
+  @include item-grade('legendary', #f39303);
+
+  .itemHeaderInfo {
+    flex-grow: 1;
+    padding: 4px 0 4px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .itemIcon {
+    width: 1em;
+    height: 1em;
+    align-self: flex-end;
+    position: relative;
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+  &.item-epic .itemIcon {
+    background-image: url(~assets/Use_11_145.webp);
+  }
+  &.item-legendary .itemIcon {
+    background-image: url(~assets/Use_11_144.webp);
+  }
+
+  .clearfix::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+  p,
+  .itemGroup {
+    margin: 10px 0;
+  }
+  .right {
+    float: right;
+  }
+
+  .groupTitle {
+    font-size: 12px;
+  }
+  .elixirName {
+    color: #b7fb00;
+  }
+
+  ul {
+    padding-left: 1em;
+    list-style-type: none;
+    margin: 0;
+    li {
+      margin: 4px 0;
+      position: relative;
+    }
+    li::before {
+      content: '\2b29';
+      display: inline-block;
+      position: absolute;
+      left: -0.8em;
+      width: 0.8em;
+      color: #8c3;
+    }
+  }
+
+  .disabled {
+    color: #888;
+  }
+}
