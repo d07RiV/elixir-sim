@@ -1,4 +1,4 @@
-import rawData from '../assets/elixir.json'
+//import rawData from '../assets/elixir.json'
 import { ActionDefinition } from './modifiers'
 
 export type ModifierDefinition = {
@@ -49,7 +49,8 @@ export type EffectSetDefinition = {
   }[]
 }
 
-const Data = rawData as {
+type GameData = {
+  describeEffects?: boolean
   modifiers: Record<number, ModifierDefinition>
   effects: Record<number, EffectDefinition>
   sets: Record<number, EffectSetDefinition[]>
@@ -63,4 +64,16 @@ const Data = rawData as {
   strings: Record<string, string>
 }
 
+export type Region = 'ru' | 'en'
+export const DefaultRegion: Region = 'en'
+
+const Data = {} as GameData
+
 export default Data
+
+export async function loadData(lang: Region) {
+  const data = await fetch(
+    process.env.PUBLIC_URL + `/elixir.${lang}.json`
+  ).then((r) => r.json())
+  Object.assign(Data, data)
+}

@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { formatHtml } from './format'
 import Data from './sim/data'
 import { ElixirState, bodyParts, effectLevel, elixirGrades } from './sim/state'
@@ -30,6 +30,8 @@ export function EffectTooltip({
     effect.descLv5
   ]
 
+  const set = Data.sets[effect.set]
+
   return (
     <div className="effectTooltip">
       <div className="title">{formatHtml(effect.title)}</div>
@@ -47,6 +49,24 @@ export function EffectTooltip({
           {formatHtml(line)}
         </div>
       ))}
+      {!!set && (
+        <>
+          <div className="setName">{formatHtml(set[0].name)}</div>
+          {set.map((fx, index) => (
+            <React.Fragment key={index}>
+              <div className="setLevel">
+                {_F(
+                  'sys.item.tooltip_elixir_additional_option_sub',
+                  index + 1,
+                  _F('tip.name.enum_elixirtype_voldaik'),
+                  fx.levelSum
+                )}
+              </div>
+              <div className="setEffect">{formatHtml(fx.desc)}</div>
+            </React.Fragment>
+          ))}
+        </>
+      )}
     </div>
   )
 }

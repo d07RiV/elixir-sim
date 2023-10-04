@@ -3,7 +3,8 @@ import React from 'react'
 import './App.scss'
 import { EffectTooltip, ElixirTooltip } from './Tooltip'
 import { formatHtml } from './format'
-import Data from './sim/data'
+import Data, { DefaultRegion, Region } from './sim/data'
+import { describeModifier } from './sim/modifiers'
 import { numberValue } from './sim/number'
 import {
   AffectedTargets,
@@ -23,6 +24,7 @@ import {
   effectLevel,
   elixirGrades
 } from './sim/state'
+import { getStoredValue, setStoredValue } from './storage'
 
 function ElixirCreator({
   setState
@@ -30,8 +32,23 @@ function ElixirCreator({
   setState: (state: ElixirState) => void
 }) {
   const [charClass, setCharClass] = React.useState(102)
+  const [region, setRegion] = React.useState(
+    getStoredValue('elixir-lang', DefaultRegion) as Region
+  )
+  const onSetRegion = React.useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setRegion(e.target.value as Region)
+      setStoredValue('elixir-lang', e.target.value)
+      window.location.reload()
+    },
+    []
+  )
   return (
     <div className="ElixirCreator">
+      <select value={region} onChange={onSetRegion}>
+        <option value="en">English</option>
+        <option value="ru">Russian</option>
+      </select>
       <select
         value={charClass}
         onChange={(e) => setCharClass(Number(e.target.value))}>
@@ -103,10 +120,13 @@ function SageEffect({ state, index }: { state: ElixirState; index: number }) {
 function SageModifier({ state, index }: { state: ElixirState; index: number }) {
   const id = state.context.modifiers[index]
   const mod = Data.modifiers[id]
+  const desc = Data.describeEffects
+    ? describeModifier(mod)
+    : [mod.desc1, mod.desc2, mod.desc3][index]
   return (
     <div className="content">
       {formatHtml(
-        [mod.desc1, mod.desc2, mod.desc3][index],
+        desc,
         ...state.effects.map((fx) => Data.effects[fx.id].title)
       )}
     </div>

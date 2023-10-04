@@ -18,6 +18,20 @@
       color: #fff;
     }
   }
+
+  .setName {
+    margin-top: 12px;
+    color: #8c3;
+  }
+  .setLevel {
+    color: #888;
+  }
+  .setEffect {
+    color: #888;
+    * {
+      color: #888 !important;
+    }
+  }
 }
 
 .elixirTooltip {
@@ -132,7 +146,8 @@
     }
   }
 
-  .disabled {
-    color: #888;
+  .disabled,
+  .disabled * {
+    color: #888 !important;
   }
 }

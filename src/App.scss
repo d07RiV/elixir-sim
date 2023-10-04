@@ -5,6 +5,16 @@
   justify-content: center;
   position: absolute;
   inset: 0;
+
+  select {
+    margin: 4px 0;
+    width: 200px;
+    font-size: 16px;
+    font-family: 'FrizQuadrata';
+    color: #fff;
+    background-color: #111;
+    padding: 2px;
+  }
 }
 
 .elixir-item {
@@ -56,6 +66,10 @@
     background-position: center;
     flex-shrink: 0;
   }
+}
+
+body {
+  overflow-y: scroll;
 }
 
 .elixirWrapper {
@@ -118,7 +132,7 @@
       position: absolute;
       left: 100%;
       margin-left: 10px;
-      z-index: 1;
+      z-index: 30;
       pointer-events: none;
     }
     &:not(.disabled):hover .effectTooltip {
@@ -215,7 +229,7 @@
       position: absolute;
       right: 100%;
       margin-right: 10px;
-      z-index: 1;
+      z-index: 30;
       pointer-events: none;
     }
     &:hover .effectTooltip {
@@ -552,7 +566,9 @@
     inset: 0;
     overflow-y: auto;
     .elixirTooltip {
+      position: relative;
       margin: 60px auto;
+      z-index: 30;
     }
   }
 }

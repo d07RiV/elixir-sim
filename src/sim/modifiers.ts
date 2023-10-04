@@ -1,4 +1,4 @@
-import Data from './data'
+import Data, { ModifierDefinition } from './data'
 import { numberAdd, numberValue } from './number'
 import { clamp0, distributions, permutations } from './random'
 import { stateEffectOptions } from './sim'
@@ -25,6 +25,42 @@ export type ElixirModifier = {
     state: ElixirState
     weight: number
   }[]
+  describe?: (mod: ActionDefinition) => string
+}
+
+function describeTarget(mod: ActionDefinition) {
+  switch (mod.targetType) {
+    case 1:
+      return '<FONT color="#FFD200">random effect</FONT>'
+    case 2:
+      return `<FONT color="#FFD200">{${mod.targetCondition - 1}}</FONT>`
+    case 4:
+      return 'effect with <FONT color="#FFD200">lowest progress</FONT>'
+    case 5:
+      return 'effect with <FONT color="#FFD200">highest progress</FONT>'
+    case 6:
+      return '<FONT color="#FFD200">effect of your choice</FONT>'
+    case 9:
+      if (mod.targetCondition) {
+        return `effects with <FONT color="#FFD200">{${mod.targetCondition}}</FONT> points or less`
+      } else {
+        return `effects with <FONT color="#FFD200">no progress</FONT>`
+      }
+    case 10:
+      return 'effects in slots <FONT color="#FFD200">1, 3 and 5</FONT>'
+    case 11:
+      return 'effects in slots <FONT color="#FFD200">2 and 4</FONT>'
+    default:
+      return '<no target>'
+  }
+}
+
+function colorNumber(v: number) {
+  if (v <= 0) {
+    return `<FONT color="#FF9999">${v}</FONT>`
+  } else {
+    return `<FONT color="#D4FF88">+${v}</FONT>`
+  }
 }
 
 const elixirModifiers: Record<number, ElixirModifier> = {}
@@ -73,6 +109,13 @@ elixirModifiers[1] = {
       )
     }
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    return `${
+      mod.valueA > 0 ? 'Increase' : 'Decrease'
+    } chance for ${describeTarget(mod)} by <FONT color="#D4FF88">${
+      Math.abs(mod.valueA) / 100
+    }</FONT>% for ${mod.maintain > 1 ? ' all remaining steps' : ' one step'}.`
   }
 }
 
@@ -91,6 +134,15 @@ elixirModifiers[2] = {
       }
     })
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    return `${
+      mod.valueA > 0 ? 'Increase' : 'Decrease'
+    } great success chance for ${describeTarget(
+      mod
+    )} by <FONT color="#D4FF88">${Math.abs(mod.valueA) / 100}</FONT>% for ${
+      mod.maintain > 1 ? ' all remaining steps' : ' one step'
+    }.`
   }
 }
 
@@ -113,6 +165,28 @@ elixirModifiers[3] = {
       { state, weight: 10000 - mod.ratio },
       { state: newState, weight: mod.ratio }
     ]
+  },
+  describe(mod) {
+    const target = describeTarget(mod)
+    if (mod.ratio === 10000) {
+      if (mod.valueA > 0) {
+        return `Add <FONT color="#D4FF88">${mod.valueA}</FONT> points to ${target}.`
+      } else {
+        return `Remove <FONT color="#D4FF88">${-mod.valueA}</FONT> points from ${target}.`
+      }
+    } else {
+      if (mod.valueA > 0) {
+        return `<FONT color="#D4FF88">${
+          mod.ratio / 100
+        }</FONT>% chance to add <FONT color="#D4FF88">${
+          mod.valueA
+        }</FONT> points to ${target}.`
+      } else {
+        return `<FONT color="#D4FF88">${
+          mod.ratio / 100
+        }</FONT>% chance to remove <FONT color="#D4FF88">${-mod.valueA}</FONT> points from ${target}.`
+      }
+    }
   }
 }
 
@@ -139,16 +213,32 @@ elixirModifiers[4] = {
         weight: 1
       }
     })
+  },
+  describe(mod) {
+    return `Modify ${describeTarget(mod)} by [${colorNumber(
+      mod.valueA
+    )}~${colorNumber(mod.valueB)}].`
   }
 }
 
 // Modify step counter by ValueA
 elixirModifiers[5] = {
-  valid: (state, target, mod) => true,
+  valid(state, target, mod) {
+    const remainSteps = elixirGrades[state.grade].steps - state.step + 1
+    const unsealed = state.effects.filter((fx) => !fx.sealed).length
+    return unsealed - 2 < remainSteps - mod.valueA
+  },
   apply(state, targets, mod) {
     state = { ...state }
     state.step += mod.valueA
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    if (mod.valueA > 0) {
+      return 'Skip one step.'
+    } else {
+      return 'Gain one extra step.'
+    }
   }
 }
 
@@ -171,6 +261,9 @@ elixirModifiers[6] = {
       })
       return { state: newState, weight: 1 }
     })
+  },
+  describe(mod) {
+    return 'Randomly swap progress of <FONT color="#FFD200">all effects</FONT>.'
   }
 }
 
@@ -186,6 +279,15 @@ elixirModifiers[7] = {
       pointsAdded: mod.valueA
     }
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    if (mod.valueA === 1) {
+      return `Transmute ${describeTarget(mod)}.`
+    } else {
+      return `On this step, ${describeTarget(mod)} will gain ${
+        mod.valueA
+      } points.`
+    }
   }
 }
 
@@ -219,6 +321,9 @@ elixirModifiers[8] = {
         }
       })
     )
+  },
+  describe(mod) {
+    return 'Unseal <FONT color="#D4FF88">one</FONT> <FONT color="#FFD200">random effect</FONT> and seal <FONT color="#D4FF88">another</FONT>.'
   }
 }
 
@@ -239,6 +344,9 @@ elixirModifiers[9] = {
       })
       return { state: newState, weight: Data.effects[id].weight }
     })
+  },
+  describe(mod) {
+    return 'Replace the effect in a slot of <FONT color="#FFD200">your choice</FONT>.'
   }
 }
 
@@ -256,6 +364,9 @@ elixirModifiers[10] = {
       state.effects[index] = { ...state.effects[index], sealed: true }
     }
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    return `Seal ${describeTarget(mod)}.`
   }
 }
 
@@ -268,6 +379,9 @@ elixirModifiers[11] = {
       rerolls: state.rerolls + mod.valueA
     }
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    return `Add <FONT color="#D4FF88">${mod.valueA}</FONT> option reroll attempts.`
   }
 }
 
@@ -278,6 +392,25 @@ elixirModifiers[12] = {
     state = { ...state }
     state.goldModifier = numberAdd(state.goldModifier, mod.valueA, mod.maintain)
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    if (mod.maintain > 1) {
+      if (mod.valueA === -10000) {
+        return 'All remaining steps will be free of charge.'
+      } else {
+        return `Reduce the price of all remaining steps by <FONT color="#D4FF88">${
+          -mod.valueA / 100
+        }%</FONT>.`
+      }
+    } else {
+      if (mod.valueA === -10000) {
+        return 'This step will be free of charge.'
+      } else {
+        return `Reduce the price of this step by <FONT color="#D4FF88">${
+          -mod.valueA / 100
+        }%</FONT>.`
+      }
+    }
   }
 }
 
@@ -286,6 +419,9 @@ elixirModifiers[13] = {
   valid: (state, target, mod) => true,
   apply(state, targets, mod) {
     return [{ state: createElixir(state.grade, state.charClass), weight: 1 }]
+  },
+  describe(mod) {
+    return 'Reset the elixir and start over.'
   }
 }
 
@@ -299,6 +435,9 @@ elixirModifiers[14] = {
       pointsAdded: mod.valueA
     }
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    return `On this step, the transmuted effect will gain <FONT color="#D4FF88">${mod.valueA}</FONT> points.`
   }
 }
 
@@ -312,6 +451,9 @@ elixirModifiers[15] = {
       effectsModified: mod.valueA
     }
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    return `Transmute <FONT color="#D4FF88">${mod.valueA}</FONT> effects at once.`
   }
 }
 
@@ -341,6 +483,11 @@ elixirModifiers[16] = {
         weight: 1
       }
     })
+  },
+  describe(mod) {
+    return `Replace progress of ${describeTarget(mod)} with [${colorNumber(
+      mod.valueA
+    )}~${colorNumber(mod.valueB)}].`
   }
 }
 
@@ -366,6 +513,9 @@ elixirModifiers[17] = {
       return { ...fx, points: points.shift()! }
     })
     return [{ state: newState, weight: 1 }]
+  },
+  describe(mod) {
+    return `Shuffle points of <FONT color="#FFD200">all effects.</FONT>`
   }
 }
 
@@ -398,6 +548,9 @@ elixirModifiers[18] = {
     )
     dest.forEach((fx, i) => (fx.points += points[i]))
     return [{ state: newState, weight: 1 }]
+  },
+  describe(mod) {
+    return `Distribute points of ${describeTarget(mod)} between other effects.`
   }
 }
 
@@ -416,6 +569,11 @@ elixirModifiers[19] = {
       return { ...fx, points: state.effects[index].points }
     })
     return [{ state: newState, weight: 1 }]
+  },
+  describe(mod) {
+    return `Move progress of <FONT color="#FFD200">all effects</FONT> one slot ${
+      mod.valueA ? 'down' : 'up'
+    }.`
   }
 }
 
@@ -440,6 +598,9 @@ elixirModifiers[20] = {
       points: state.effects[mod.valueA].points
     }
     return [{ state: newState, weight: 1 }]
+  },
+  describe(mod) {
+    return `Swap progress of <FONT color="#FFD200">{${mod.valueA}}</FONT> and <FONT color="#FFD200">{${mod.valueB}}</FONT>.`
   }
 }
 
@@ -485,6 +646,9 @@ elixirModifiers[23] = {
         return { state: newState, weight: 1 }
       })
     )
+  },
+  describe(mod) {
+    return `Swap progress of effects with <FONT color="#FFD200">highest</FONT> and <FONT color="#FFD200">lowest</FONT> points.`
   }
 }
 
@@ -500,6 +664,9 @@ elixirModifiers[24] = {
       chaos: 0
     }
     return [{ state, weight: 1 }]
+  },
+  describe(mod) {
+    return `This Sage will no longer provide any options.`
   }
 }
 
@@ -540,6 +707,15 @@ elixirModifiers[25] = {
       }
       return { state: newState, weight: 1 }
     })
+  },
+  describe(mod) {
+    if (mod.targetType) {
+      return `Highest effect ${colorNumber(mod.valueA)}; ${describeTarget(
+        mod
+      )} ${colorNumber(mod.valueB)}`
+    } else {
+      return `Highest effect ${colorNumber(mod.valueA)}`
+    }
   }
 }
 
@@ -580,6 +756,15 @@ elixirModifiers[26] = {
       }
       return { state: newState, weight: 1 }
     })
+  },
+  describe(mod) {
+    if (mod.targetType) {
+      return `Lowest effect ${colorNumber(mod.valueA)}; ${describeTarget(
+        mod
+      )} ${colorNumber(mod.valueB)}`
+    } else {
+      return `Lowest effect ${colorNumber(mod.valueA)}`
+    }
   }
 }
 
@@ -602,6 +787,9 @@ elixirModifiers[27] = {
     return minIndices.flatMap((index) => {
       return elixirModifiers[18].apply(state, [index], mod)
     })
+  },
+  describe(mod) {
+    return `Distribute points of effect with <FONT color="#FFD200">lowest progress</FONT> between other effects.`
   }
 }
 
@@ -624,6 +812,9 @@ elixirModifiers[28] = {
     return maxIndices.flatMap((index) => {
       return elixirModifiers[18].apply(state, [index], mod)
     })
+  },
+  describe(mod) {
+    return `Distribute points of effect with <FONT color="#FFD200">highest progress</FONT> between other effects.`
   }
 }
 
@@ -661,6 +852,9 @@ elixirModifiers[29] = {
         return { state: newState, weight: 1 }
       })
     )
+  },
+  describe(mod) {
+    return `Remove <FONT color="#FF9999">1</FONT> point from effect with <FONT color="#FFD200">highest progress</FONT> and swap it with <FONT color="#FFD200">lowest progress</FONT>.`
   }
 }
 
@@ -694,7 +888,21 @@ elixirModifiers[30] = {
       points: state.effects[mod.valueB].points
     }
     return [{ state: newState, weight: 1 }]
+  },
+  describe(mod) {
+    return `Remove <FONT color="#FF9999">1</FONT> point from <FONT color="#FFD200">{${mod.valueA}}</FONT> and swap it with <FONT color="#FFD200">{${mod.valueB}}</FONT>.`
   }
 }
 
 export { elixirModifiers }
+
+export function describeModifier(mod: ModifierDefinition) {
+  if (mod.actions.length) {
+    return mod.actions
+      .map((action) => elixirModifiers[action.type]?.describe?.(action))
+      .filter(Boolean)
+      .join('\n')
+  } else {
+    return '(This Sage is resting.)'
+  }
+}
