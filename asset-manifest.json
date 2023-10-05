@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/elixir-sim/static/css/main.a1fbcc98.css",
-    "main.js": "/elixir-sim/static/js/main.40e22f9b.js",
+    "main.js": "/elixir-sim/static/js/main.d77805e9.js",
     "static/media/FrizQuadrataC.ttf": "/elixir-sim/static/media/FrizQuadrataC.f8aa612d21be070fcf45.ttf",
     "static/media/background.webp": "/elixir-sim/static/media/background.b07f3c6e38455c82b967.webp",
     "static/media/reroll.webp": "/elixir-sim/static/media/reroll.513e002d2c8ad2adfaf1.webp",
@@ -13,10 +13,10 @@
     "static/media/buttons.webp": "/elixir-sim/static/media/buttons.fbdf61b8abbe759b9657.webp",
     "index.html": "/elixir-sim/index.html",
     "main.a1fbcc98.css.map": "/elixir-sim/static/css/main.a1fbcc98.css.map",
-    "main.40e22f9b.js.map": "/elixir-sim/static/js/main.40e22f9b.js.map"
+    "main.d77805e9.js.map": "/elixir-sim/static/js/main.d77805e9.js.map"
   },
   "entrypoints": [
     "static/css/main.a1fbcc98.css",
-    "static/js/main.40e22f9b.js"
+    "static/js/main.d77805e9.js"
   ]
 }
