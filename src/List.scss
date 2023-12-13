@@ -1,0 +1,78 @@
+.elixirListWrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  background: rgba(#080808, 0.5);
+}
+
+.elixirList {
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+  height: 500px;
+  .titleBar {
+    background: rgba(#141414, 0.95);
+    font-size: 20px;
+    display: flex;
+    flex-direction: row;
+    padding: 6px 12px;
+    .title {
+      flex-grow: 1;
+    }
+    .close {
+      cursor: pointer;
+      background: #000;
+      width: 24px;
+      height: 24px;
+      margin-right: -4px;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      &::before {
+        content: '\00d7';
+      }
+    }
+  }
+  .body {
+    background: rgba(#0a0a0a, 0.95);
+    flex: 1 1;
+    flex-basis: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    .itemList {
+      flex-grow: 1;
+    }
+    .effectList {
+      flex-grow: 1.5;
+      border-left: 4px solid rgba(#141414, 0.95);
+      border-right: 4px solid rgba(#141414, 0.95);
+    }
+    .itemList,
+    .effectList {
+      list-style-type: none;
+      padding: 10px;
+      margin: 0;
+      flex-basis: 0;
+      li {
+        padding: 4px 0;
+        cursor: pointer;
+        &.active {
+          color: #ffd200;
+        }
+      }
+    }
+    .effectPreview {
+      width: 300px;
+      .effectTooltip {
+        background: none;
+      }
+      overflow-y: auto;
+    }
+  }
+}
