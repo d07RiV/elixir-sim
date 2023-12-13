@@ -62,7 +62,7 @@ function filterEffects(state: ElixirState, func: (fx: EffectState) => boolean) {
   return state.effects.map((_, i) => i).filter((i) => func(state.effects[i]))
 }
 
-function effectTargets(state: ElixirState, mod: ActionDefinition) {
+export function effectTargets(state: ElixirState, mod: ActionDefinition) {
   switch (mod.targetType) {
     case 0:
       return [-1]
@@ -136,11 +136,22 @@ export function generateModifiers(state: ElixirState) {
   })
 }
 
+export function stateGoldCost(state: ElixirState) {
+  const modifier = numberValue(state.goldModifier)
+  return Math.round(
+    Math.max(
+      0,
+      (elixirGrades[state.grade].goldPerStep * (10000 + modifier)) / 10000
+    )
+  )
+}
+
 export function stateAddEffect(state: ElixirState) {
   const id = state.context.modifiers[state.context.pickedSage]
   state = { ...state }
   state.effects = state.effects.slice()
   state.effects.push(createElixirEffect(id))
+  state.goldSpent += stateGoldCost(state)
   if (state.effects.length >= 5) {
     state.context = createStepContext(generateModifiers(state))
   } else {
@@ -228,6 +239,8 @@ export function stateApplyModifier(state: ElixirState) {
     const index = weighedRandom(results.map((r) => r.weight))
     state = results[index].state
   }
+  // special case for reset
+  if (state.effects.length < 5) return state
   state = { ...state }
   state.context = {
     ...state.context,
@@ -281,9 +294,11 @@ export function stateTransmute(state: ElixirState) {
     (i) => !state.effects[i].sealed && state.effects[i].points < maxPoints
   )
   state = { ...state }
+  state.goldSpent += stateGoldCost(state)
+
   const effectPoints = state.effects.map((fx) => fx.points)
   const effectChances = state.effects.map((fx) => numberValue(fx.chance))
-  for (let i = 0; i < state.context.effectsModified; ++i) {
+  for (let i = 0; i < state.context.effectsModified && effectPool.length; ++i) {
     const poolIndex = weighedRandom(effectPool.map((i) => effectChances[i]))
     const index = effectPool[poolIndex]
     effectPool.splice(poolIndex, 1)

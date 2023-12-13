@@ -26,12 +26,17 @@ export type ElixirModifier = {
     weight: number
   }[]
   describe?: (mod: ActionDefinition) => string
+  optimizeIgnore?: boolean
 }
 
 function describeTarget(mod: ActionDefinition) {
   switch (mod.targetType) {
     case 1:
-      return '<FONT color="#FFD200">random effect</FONT>'
+      if (mod.targetCount === 5) {
+        return '<FONT color="#FFD200">all effects</FONT>'
+      } else {
+        return '<FONT color="#FFD200">random effect</FONT>'
+      }
     case 2:
       return `<FONT color="#FFD200">{${mod.targetCondition - 1}}</FONT>`
     case 4:
@@ -264,7 +269,8 @@ elixirModifiers[6] = {
   },
   describe(mod) {
     return 'Randomly swap progress of <FONT color="#FFD200">all effects</FONT>.'
-  }
+  },
+  optimizeIgnore: true
 }
 
 // Add ValueA points to target (replace step action)
@@ -347,7 +353,8 @@ elixirModifiers[9] = {
   },
   describe(mod) {
     return 'Replace the effect in a slot of <FONT color="#FFD200">your choice</FONT>.'
-  }
+  },
+  optimizeIgnore: true
 }
 
 // Seal target
@@ -422,7 +429,8 @@ elixirModifiers[13] = {
   },
   describe(mod) {
     return 'Reset the elixir and start over.'
-  }
+  },
+  optimizeIgnore: true
 }
 
 // Points added per step
@@ -516,7 +524,8 @@ elixirModifiers[17] = {
   },
   describe(mod) {
     return `Shuffle points of <FONT color="#FFD200">all effects.</FONT>`
-  }
+  },
+  optimizeIgnore: true
 }
 
 // Remove points from target and distribute between other effects
@@ -551,7 +560,8 @@ elixirModifiers[18] = {
   },
   describe(mod) {
     return `Distribute points of ${describeTarget(mod)} between other effects.`
-  }
+  },
+  optimizeIgnore: true
 }
 
 // Move effect progress 1 row up or down (ValueA=1 => down)
@@ -790,7 +800,8 @@ elixirModifiers[27] = {
   },
   describe(mod) {
     return `Distribute points of effect with <FONT color="#FFD200">lowest progress</FONT> between other effects.`
-  }
+  },
+  optimizeIgnore: true
 }
 
 // Remove points from highest effect and distribute between other effects
@@ -815,7 +826,8 @@ elixirModifiers[28] = {
   },
   describe(mod) {
     return `Distribute points of effect with <FONT color="#FFD200">highest progress</FONT> between other effects.`
-  }
+  },
+  optimizeIgnore: true
 }
 
 // Highest effect -1, swap with lowest effect

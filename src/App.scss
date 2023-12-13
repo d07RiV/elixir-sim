@@ -76,6 +76,7 @@ body {
   position: absolute;
   inset: 0;
   height: 900px;
+  min-width: 1613px;
   min-height: 100%;
   display: flex;
   align-items: center;
@@ -189,19 +190,26 @@ body {
       background-position: 0 -92px;
     }
   }
-  .exitButton {
+  .exitButton,
+  .listButton {
     z-index: 20;
     position: absolute;
     width: 151px;
     height: 46px;
-    right: 17px;
-    top: 833px;
     line-height: 46px;
     text-align: center;
     text-shadow: 0 1px 2px #000;
     cursor: pointer;
     background-image: url(~assets/buttons.webp);
     background-position: 0 -138px;
+  }
+  .exitButton {
+    right: 17px;
+    top: 833px;
+  }
+  .listButton {
+    right: 180px;
+    top: 833px;
   }
 
   .panels {
@@ -420,6 +428,24 @@ body {
     justify-content: center;
     text-align: center;
     background: linear-gradient(to right, transparent, #000, transparent);
+
+    &.goldSpent {
+      .name {
+        width: 100px;
+        text-align: left;
+        color: #abb0b5;
+      }
+      .icon {
+        width: 20px;
+        height: 19px;
+        background: url(~assets/gold.png);
+        margin-top: -2px;
+        margin-left: 3px;
+      }
+      .amount {
+        color: #fff;
+      }
+    }
   }
 
   .remainingSteps {
@@ -506,13 +532,13 @@ body {
     text-shadow: 0 1px 2px #000;
     .header {
       color: #8dadbc;
+      margin-bottom: 12px;
     }
     .item {
-      height: 46px;
       display: flex;
       flex-direction: row;
       align-items: center;
-      margin: 6px 0;
+      margin: 4px 0;
       padding-left: 12px;
       .icon {
         width: 20px;

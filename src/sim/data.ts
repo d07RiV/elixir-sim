@@ -8,6 +8,7 @@ export type ModifierDefinition = {
   desc1: string
   desc2: string
   desc3: string
+  tooltip: string
   slotType: number
   attrType: number
   applyMax: number

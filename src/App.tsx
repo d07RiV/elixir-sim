@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import React from 'react'
 import './App.scss'
+import { ElixirList } from './List'
 import { EffectTooltip, ElixirTooltip } from './Tooltip'
 import { formatHtml } from './format'
 import Data, { DefaultRegion, Region } from './sim/data'
@@ -11,6 +12,7 @@ import {
   modifierAffectedTargets,
   stateAddEffect,
   stateApplyModifier,
+  stateGoldCost,
   statePreviewModifier,
   stateRerollOptions,
   stateSelectSage,
@@ -128,6 +130,11 @@ function SageModifier({ state, index }: { state: ElixirState; index: number }) {
       {formatHtml(
         desc,
         ...state.effects.map((fx) => Data.effects[fx.id].title)
+      )}
+      {mod.tooltip.length > 0 && (
+        <div className="effectTooltip">
+          {formatHtml(Data.strings[mod.tooltip])}
+        </div>
       )}
     </div>
   )
@@ -283,7 +290,7 @@ function EffectPanel({
     } else {
       active = picking
     }
-  } else if (targets.targetCount === targets.targets.length) {
+  } else if (targets.targetCount >= targets.targets.length) {
     if (state.context.modifierApplied) {
       active = targets.targets.includes(index)
     } else {
@@ -409,11 +416,12 @@ function ElixirPrice({ state }: { state: ElixirState }) {
           <div className="name">
             {Data.strings['sys.elixir.ui_refine_cost_need']}
           </div>
-          <div className="amount">
-            {Math.round(
-              Math.max(0, (grade.goldPerStep * (10000 + modifier)) / 10000)
-            )}
-          </div>
+          <div className="amount">{stateGoldCost(state)}</div>
+          <div className="icon" />
+        </div>
+        <div className="item">
+          <div className="name">{Data.strings['gold_spent']}</div>
+          <div className="amount">{state.goldSpent}</div>
           <div className="icon" />
         </div>
       </div>
@@ -479,6 +487,24 @@ function RerollButton({ state, setState }: StateParams) {
   )
 }
 
+export function ListButton({ state }: { state: ElixirState }) {
+  const [show, setShow] = React.useState(false)
+  return (
+    <>
+      <div className="listButton" onClick={() => setShow(true)}>
+        {formatHtml(Data.strings['sys.elixir.ui_btn_elixir_option_info'])}
+      </div>
+      {show && (
+        <ElixirList
+          grade={state.grade}
+          charClass={state.charClass}
+          onClose={() => setShow(false)}
+        />
+      )}
+    </>
+  )
+}
+
 function ElixirEditor({
   state,
   setState
@@ -521,11 +547,20 @@ function ElixirEditor({
           ))}
         </div>
         {state.step <= steps && <ElixirGuide state={state} />}
+
+        <ListButton state={state} />
         <RerollButton state={state} setState={setState} />
 
         {state.step > steps && (
           <div className="tooltipWrapper">
             <ElixirTooltip state={state} />
+          </div>
+        )}
+        {state.step > steps && (
+          <div className="guide-middle goldSpent">
+            <div className="name">{formatHtml(Data.strings['gold_spent'])}</div>
+            <div className="amount">{state.goldSpent}</div>
+            <div className="icon" />
           </div>
         )}
       </div>

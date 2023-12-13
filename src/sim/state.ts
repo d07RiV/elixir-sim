@@ -36,6 +36,7 @@ export type ElixirState = {
   goldModifier: MutableNumber
   rerolls: number
   context: StepContext
+  goldSpent: number
 }
 
 export function createElixir(
@@ -54,7 +55,8 @@ export function createElixir(
     effects: [],
     goldModifier: numberCreate(0),
     rerolls: 2,
-    context: undefined!
+    context: undefined!,
+    goldSpent: 0
   }
   state.context = createStepContext(generateEffectOptions(state))
   return state

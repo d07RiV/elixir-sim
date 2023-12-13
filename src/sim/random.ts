@@ -42,3 +42,29 @@ export function distributions(points: number, buckets: number[]) {
   }
   return result
 }
+
+export function pickOutcomes(weights: number[], count: number) {
+  const result: {
+    indices: number[]
+    weight: number
+  }[] = []
+  function iter(weight: number, i: number, c: number, indices: number[]) {
+    if (!c) {
+      result.push({ indices, weight })
+    } else {
+      iter(weight * weights[i], i + 1, c - 1, [...indices, i])
+      if (weights.length - i - 1 >= c) {
+        iter(weight, i + 1, c, indices)
+      }
+    }
+  }
+  iter(1, 0, count, [])
+  return result
+}
+
+export function normalizeWeights(values: { weight: number }[]) {
+  const sum = values.reduce((sum, v) => sum + v.weight, 0)
+  for (const v of values) {
+    v.weight /= sum
+  }
+}
