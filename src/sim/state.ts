@@ -102,7 +102,7 @@ export const elixirGrades: Record<ElixirGrade, ElixirGradeDefinition> = {
     pointsPerLevel: [3, 6, 8, 9],
     goldPerStep: 120,
     catalystsPerStep: 2,
-    steps: 11,
+    steps: 12,
     name: 'tip.name.enum_itemgrade_epic',
     itemName: 'tip.name.item_66160200'
   },
