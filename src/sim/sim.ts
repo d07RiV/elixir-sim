@@ -31,14 +31,18 @@ export function stateEffectOptions(state: ElixirState) {
     })
 }
 
-export function generateEffectOptions(state: ElixirState) {
+export function generateEffectOptions(
+  state: ElixirState,
+  rerollFrom?: number[]
+) {
   const options = stateEffectOptions(state)
-  const weights = options.map((id) => Data.effects[id].weight)
-  return [0, 1, 2].map(() => {
+  return [0, 1, 2].map((slot) => {
+    const weights = options.map((id) =>
+      rerollFrom && rerollFrom[slot] === id ? 0 : Data.effects[id].weight
+    )
     const index = weighedRandom(weights)
     const id = options[index]
     options.splice(index, 1)
-    weights.splice(index, 1)
     return id
   })
 }
@@ -116,11 +120,11 @@ export function validModifiersForSlot(state: ElixirState, slot: number) {
     })
 }
 
-export function generateModifiers(state: ElixirState) {
+export function generateModifiers(state: ElixirState, rerollFrom?: number[]) {
   const used = new Set<number>()
   return [0, 1, 2].map((slot) => {
     const mods = validModifiersForSlot(state, slot).filter(
-      (id) => !used.has(id)
+      (id) => !used.has(id) && (!rerollFrom || rerollFrom[slot] !== id)
     )
     if (!mods.length)
       throw Error(
@@ -344,9 +348,13 @@ export function stateRerollOptions(state: ElixirState) {
   state = { ...state }
   state.rerolls -= 1
   if (state.effects.length >= 5) {
-    state.context = createStepContext(generateModifiers(state))
+    state.context = createStepContext(
+      generateModifiers(state, state.context.modifiers)
+    )
   } else {
-    state.context = createStepContext(generateEffectOptions(state))
+    state.context = createStepContext(
+      generateEffectOptions(state, state.context.modifiers)
+    )
   }
   return state
 }
