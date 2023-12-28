@@ -1,14 +1,25 @@
 {
   "files": {
-    "main.css": "/elixir-sim/static/css/main.ecb9d537.css",
-    "main.js": "/elixir-sim/static/js/main.3fbe9041.js",
+    "main.css": "/elixir-sim/static/css/main.9c96b243.css",
+    "main.js": "/elixir-sim/static/js/main.d50bdcef.js",
     "static/media/FrizQuadrataC.ttf": "/elixir-sim/static/media/FrizQuadrataC.f8aa612d21be070fcf45.ttf",
+    "static/media/background.webp": "/elixir-sim/static/media/background.b07f3c6e38455c82b967.webp",
+    "static/media/reroll.webp": "/elixir-sim/static/media/reroll.513e002d2c8ad2adfaf1.webp",
+    "static/media/panel.webp": "/elixir-sim/static/media/panel.e1d8f5dd61c948a8ff6b.webp",
+    "static/media/Use_11_144.webp": "/elixir-sim/static/media/Use_11_144.648d747d7061bb1bc680.webp",
+    "static/media/stars.webp": "/elixir-sim/static/media/stars.162b1a0cd77c922bbdf8.webp",
+    "static/media/ticks.webp": "/elixir-sim/static/media/ticks.b7e1bccd76596e8460d2.webp",
+    "static/media/Use_11_146.webp": "/elixir-sim/static/media/Use_11_146.6431e4944fac62add8c5.webp",
+    "static/media/Use_11_145.webp": "/elixir-sim/static/media/Use_11_145.5de6c18512ff9fa1b3b7.webp",
+    "static/media/Use_11_150.webp": "/elixir-sim/static/media/Use_11_150.affa12f4d9dd4e8c91b0.webp",
+    "static/media/Use_11_147.webp": "/elixir-sim/static/media/Use_11_147.5f950358dfc3f2db36dd.webp",
+    "static/media/buttons.webp": "/elixir-sim/static/media/buttons.fbdf61b8abbe759b9657.webp",
     "index.html": "/elixir-sim/index.html",
-    "main.ecb9d537.css.map": "/elixir-sim/static/css/main.ecb9d537.css.map",
-    "main.3fbe9041.js.map": "/elixir-sim/static/js/main.3fbe9041.js.map"
+    "main.9c96b243.css.map": "/elixir-sim/static/css/main.9c96b243.css.map",
+    "main.d50bdcef.js.map": "/elixir-sim/static/js/main.d50bdcef.js.map"
   },
   "entrypoints": [
-    "static/css/main.ecb9d537.css",
-    "static/js/main.3fbe9041.js"
+    "static/css/main.9c96b243.css",
+    "static/js/main.d50bdcef.js"
   ]
 }
